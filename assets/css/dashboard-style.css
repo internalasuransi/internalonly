@@ -1,0 +1,318 @@
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Unbounded:wght@200..900&display=swap");
+
+/*=============== VARIABLES CSS ===============*/
+:root {
+  /*========== Colors ==========*/
+  /*Color mode HSL(hue, saturation, lightness)*/
+  --dashboard-primary: hsl(4, 82%, 54%); /* Warna tombol utama */
+  --dashboard-primary-alt: hsl(4, 78%, 50%);
+  --dashboard-hover: hsl(0, 0%, 95%);
+  --dashboard-title: hsl(0, 0%, 12%); /* Warna teks utama */
+  --dashboard-text: hsl(0, 0%, 40%); /* Warna teks sekunder */
+  --dashboard-white: hsl(0, 0%, 100%);
+  --dashboard-border: hsl(0, 0%, 72%);
+  --dashboard-bg: hsl(0, 0%, 100%); /* Background Body */
+
+  /*========== Font and typography ==========*/
+  --dashboard-body-font: "Montserrat", sans-serif;
+  --dashboard-second-font: "Unbounded", sans-serif;
+  --dashboard-bigger-size: 1.5rem;
+  --dashboard-normal-size: .938rem;
+  --dashboard-small-size: .875rem;
+
+  /*========== Font weight ==========*/
+  --dashboard-regular: 400;
+  --dashboard-semi-bold: 600;
+}
+
+/*========== Responsive typography ==========*/
+@media screen and (min-width: 1150px) {
+  :root {
+    --dashboard-bigger-size: 1.75rem;
+    --dashboard-normal-size: 1rem;
+    --dashboard-small-size: .938rem;
+  }
+}
+
+/*=============== DASHBOARD BASE ===============*/
+.dashboard-body,
+.dashboard-input,
+.dashboard-button {
+  font-family: var(--dashboard-body-font);
+  font-size: var(--dashboard-normal-size);
+}
+
+.dashboard-body {
+  background-color: var(--dashboard-bg);
+  color: var(--dashboard-text);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-input,
+.dashboard-button {
+  border: none;
+  outline: none;
+}
+
+.dashboard-link {
+  text-decoration: none;
+}
+
+.dashboard-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/*=============== DASHBOARD SIDEBAR ===============*/
+#dashboard-sidebar {
+  box-sizing: border-box;
+  height: 100vh;
+  width: 250px;
+  padding: 5px 1em;
+  background-color: var(--dashboard-bg);
+  border-right: 1px solid var(--dashboard-border);
+  position: sticky;
+  top: 0;
+  align-self: start;
+  transition: 300ms ease-in-out;
+  overflow: hidden;
+  text-wrap: nowrap;
+}
+
+#dashboard-sidebar.close {
+  padding: 5px;
+  width: 60px;
+}
+
+#dashboard-sidebar ul {
+  list-style: none;
+}
+
+#dashboard-sidebar > ul > li:first-child {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.dashboard-logo {
+  font-weight: 600;
+  color: var(--dashboard-title);
+  font-family: var(--dashboard-second-font);
+}
+
+#dashboard-sidebar ul li.active a {
+  color: var(--dashboard-primary);
+}
+
+#dashboard-sidebar ul li.active a svg {
+  fill: var(--dashboard-primary);
+}
+
+#dashboard-sidebar a,
+#dashboard-sidebar .dashboard-dropdown-btn,
+.dashboard-logo {
+  border-radius: .5em;
+  padding: .85em;
+  text-decoration: none;
+  color: var(--dashboard-title);
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.dashboard-dropdown-btn {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  color: var(--dashboard-title);
+}
+
+#dashboard-sidebar svg {
+  flex-shrink: 0;
+  fill: var(--dashboard-title);
+}
+
+#dashboard-sidebar a span,
+#dashboard-sidebar .dashboard-dropdown-btn span {
+  flex-grow: 1;
+}
+
+#dashboard-sidebar a:hover,
+#dashboard-sidebar .dashboard-dropdown-btn:hover {
+  background-color: var(--dashboard-hover);
+}
+
+#dashboard-sidebar .dashboard-sub-menu {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: 300ms ease-in-out;
+}
+
+#dashboard-sidebar .dashboard-sub-menu > div {
+  overflow: hidden;
+}
+
+#dashboard-sidebar .dashboard-sub-menu.show {
+  grid-template-rows: 1fr;
+}
+
+.dashboard-dropdown-btn svg {
+  transition: 200ms ease;
+}
+
+.dashboard-rotate svg:last-child {
+  rotate: 180deg;
+}
+
+#dashboard-sidebar .dashboard-sub-menu a {
+  padding-left: 2em;
+}
+
+#dashboard-toggle-btn {
+  margin-left: auto;
+  padding: 1em;
+  border: none;
+  border-radius: .5em;
+  background: none;
+  cursor: pointer;
+}
+
+#dashboard-toggle-btn svg {
+  transition: rotate 150ms ease;
+  fill: var(--dashboard-title);
+}
+
+#dashboard-toggle-btn:hover {
+  background-color: var(--dashboard-hover);
+}
+
+/*=============== DASHBOARD MAIN CONTENT ===============*/
+.dashboard-main {
+  padding: min(30px, 7%);
+}
+
+.dashboard-main p {
+  color: var(--dashboard-text);
+  margin-top: 5px;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.dashboard-content-box {
+  border: 1px solid var(--dashboard-border);
+  border-radius: 1em;
+  margin-bottom: 20px;
+  padding: min(3em, 15%);
+  background-color: var(--dashboard-white);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-content-box h2,
+.dashboard-content-box p {
+  margin-top: 1em;
+}
+
+.dashboard-content-box h2 {
+  color: var(--dashboard-title);
+  font-family: var(--dashboard-second-font);
+  margin-bottom: 0.5em;
+}
+
+.dashboard-content-box h2:first-child {
+  margin-top: 0;
+}
+
+/*=============== DASHBOARD RESPONSIVE ===============*/
+@media(max-width: 800px){
+  .dashboard-body {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-main {
+    padding: 2em 1em 60px 1em;
+  }
+  
+  .dashboard-content-box {
+    border: none;
+    padding: 1.5em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  #dashboard-sidebar {
+    height: 60px;
+    width: 100%;
+    border-right: none;
+    border-top: 1px solid var(--dashboard-border);
+    padding: 0;
+    position: fixed;
+    top: unset;
+    bottom: 0;
+    z-index: 1000;
+  }
+  
+  #dashboard-sidebar > ul {
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    align-items: center;
+    overflow-x: scroll;
+  }
+  
+  #dashboard-sidebar ul li {
+    height: 100%;
+  }
+  
+  #dashboard-sidebar ul a,
+  #dashboard-sidebar ul .dashboard-dropdown-btn {
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    border-radius: 0;
+    justify-content: center;
+  }
+  
+  #dashboard-sidebar ul li span,
+  #dashboard-sidebar ul li:first-child,
+  .dashboard-dropdown-btn svg:last-child {
+    display: none;
+  }
+  
+  #dashboard-sidebar ul li .dashboard-sub-menu.show {
+    position: fixed;
+    bottom: 60px;
+    left: 0;
+    box-sizing: border-box;
+    height: 60px;
+    width: 100%;
+    background-color: var(--dashboard-hover);
+    border-top: 1px solid var(--dashboard-border);
+    display: flex;
+    justify-content: center;
+  }
+  
+  #dashboard-sidebar ul li .dashboard-sub-menu.show > div {
+    overflow-x: auto;
+  }
+  
+  #dashboard-sidebar ul li .dashboard-sub-menu.show li {
+    display: inline-flex;
+  }
+  
+  #dashboard-sidebar ul li .dashboard-sub-menu.show a {
+    box-sizing: border-box;
+    padding: 1em;
+    width: auto;
+    justify-content: center;
+    white-space: nowrap;
+  }
+}
