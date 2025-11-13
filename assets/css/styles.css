@@ -340,3 +340,33 @@ img {
     opacity: 1;
   }
 }
+
+/* --- START OF CUSTOM GRADIENT --- */
+
+/* Menimpa dark mode dengan gradien terang dan mengubah warna teks utama menjadi gelap */
+body {
+    /* Gradien Anda */
+    background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%); 
+    /* Penting: Set warna teks utama menjadi gelap */
+    color: var(--base-clr); 
+}
+
+/* Mengubah warna teks sidebar agar terlihat di background terang */
+#sidebar a, #sidebar .dropdown-btn, #sidebar .logo {
+    color: var(--base-clr); /* Warna teks menjadi gelap */
+}
+
+#sidebar svg {
+    fill: var(--base-clr); /* Warna ikon menjadi gelap */
+}
+
+/* Mengubah style hover agar lebih terlihat */
+#sidebar a:hover, #sidebar .dropdown-btn:hover {
+    background-color: var(--hover-clr); /* Tetap hover yang gelap */
+    color: var(--text-clr); /* Ubah warna teks menjadi putih saat hover */
+    svg {
+        fill: var(--text-clr);
+    }
+}
+
+/* --- END OF CUSTOM GRADIENT --- */
