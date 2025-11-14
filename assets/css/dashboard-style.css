@@ -1,72 +1,38 @@
 /*=============== GOOGLE FONTS ===============*/
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Unbounded:wght@200..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
 
 /*=============== VARIABLES CSS ===============*/
 :root {
   /*========== Colors ==========*/
-  /*Color mode HSL(hue, saturation, lightness)*/
-  --dashboard-primary: hsl(4, 82%, 54%); /* Warna tombol utama */
+  --dashboard-primary: hsl(4, 82%, 54%);
   --dashboard-primary-alt: hsl(4, 78%, 50%);
   --dashboard-hover: hsl(0, 0%, 95%);
-  --dashboard-title: hsl(0, 0%, 12%); /* Warna teks utama */
-  --dashboard-text: hsl(0, 0%, 40%); /* Warna teks sekunder */
+  --dashboard-title: hsl(0, 0%, 12%);
+  --dashboard-text: hsl(0, 0%, 40%);
   --dashboard-white: hsl(0, 0%, 100%);
   --dashboard-border: hsl(0, 0%, 72%);
-  --dashboard-bg: hsl(0, 0%, 100%); /* Background Body */
+  --dashboard-bg: hsl(0, 0%, 100%);
 
   /*========== Font and typography ==========*/
-  --dashboard-body-font: "Montserrat", sans-serif;
-  --dashboard-second-font: "Unbounded", sans-serif;
-  --dashboard-bigger-size: 1.5rem;
-  --dashboard-normal-size: .938rem;
-  --dashboard-small-size: .875rem;
+  --dashboard-body-font: "Roboto", sans-serif;
+  --dashboard-second-font: "Poppins", sans-serif;
+  --dashboard-bigger-size: 1.25rem;
+  --dashboard-normal-size: 0.875rem;
+  --dashboard-small-size: 0.813rem;
 
   /*========== Font weight ==========*/
   --dashboard-regular: 400;
   --dashboard-semi-bold: 600;
+  --dashboard-bold: 700;
 }
 
 /*========== Responsive typography ==========*/
 @media screen and (min-width: 1150px) {
   :root {
-    --dashboard-bigger-size: 1.75rem;
-    --dashboard-normal-size: 1rem;
-    --dashboard-small-size: .938rem;
+    --dashboard-bigger-size: 1.5rem;
+    --dashboard-normal-size: 0.938rem;
+    --dashboard-small-size: 0.875rem;
   }
-}
-
-/*=============== DASHBOARD BASE ===============*/
-.dashboard-body,
-.dashboard-input,
-.dashboard-button {
-  font-family: var(--dashboard-body-font);
-  font-size: var(--dashboard-normal-size);
-}
-
-.dashboard-body {
-  background-color: var(--dashboard-bg);
-  color: var(--dashboard-text);
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  margin: 0;
-  padding: 0;
-}
-
-.dashboard-input,
-.dashboard-button {
-  border: none;
-  outline: none;
-}
-
-.dashboard-link {
-  text-decoration: none;
-}
-
-.dashboard-img {
-  display: block;
-  max-width: 100%;
-  height: auto;
 }
 
 /*=============== DASHBOARD SIDEBAR ===============*/
@@ -83,15 +49,44 @@
   transition: 300ms ease-in-out;
   overflow: hidden;
   text-wrap: nowrap;
+  z-index: 1000;
 }
 
 #dashboard-sidebar.close {
   padding: 5px;
   width: 60px;
+  overflow: hidden;
+}
+
+/* Sembunyikan semua teks ketika sidebar tertutup */
+#dashboard-sidebar.close a span,
+#dashboard-sidebar.close .dashboard-dropdown-btn span,
+#dashboard-sidebar.close .dashboard-logo {
+  display: none !important;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Pastikan hanya icon yang terlihat ketika sidebar tertutup */
+#dashboard-sidebar.close a,
+#dashboard-sidebar.close .dashboard-dropdown-btn {
+  justify-content: center;
+  padding: 0.85em 0.5em;
+  min-width: 50px;
+  gap: 0;
+}
+
+/* Sembunyikan dropdown arrow ketika sidebar tertutup */
+#dashboard-sidebar.close .dashboard-dropdown-btn svg:last-child {
+  display: none;
 }
 
 #dashboard-sidebar ul {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 #dashboard-sidebar > ul > li:first-child {
@@ -101,9 +96,10 @@
 }
 
 .dashboard-logo {
-  font-weight: 600;
+  font-weight: var(--dashboard-bold);
   color: var(--dashboard-title);
   font-family: var(--dashboard-second-font);
+  font-size: var(--dashboard-bigger-size);
 }
 
 #dashboard-sidebar ul li.active a {
@@ -124,7 +120,10 @@
   display: flex;
   align-items: center;
   gap: 1em;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-family: var(--dashboard-body-font);
+  font-weight: var(--dashboard-regular);
 }
 
 .dashboard-dropdown-btn {
@@ -140,11 +139,14 @@
 #dashboard-sidebar svg {
   flex-shrink: 0;
   fill: var(--dashboard-title);
+  width: 24px;
+  height: 24px;
 }
 
 #dashboard-sidebar a span,
 #dashboard-sidebar .dashboard-dropdown-btn span {
   flex-grow: 1;
+  transition: opacity 0.3s ease;
 }
 
 #dashboard-sidebar a:hover,
@@ -176,6 +178,12 @@
 
 #dashboard-sidebar .dashboard-sub-menu a {
   padding-left: 2em;
+  font-size: var(--dashboard-small-size);
+  font-family: var(--dashboard-body-font);
+}
+
+#dashboard-sidebar .dashboard-sub-menu a:hover {
+  background-color: var(--dashboard-hover);
 }
 
 #dashboard-toggle-btn {
@@ -185,6 +193,9 @@
   border-radius: .5em;
   background: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #dashboard-toggle-btn svg {
@@ -196,60 +207,43 @@
   background-color: var(--dashboard-hover);
 }
 
-/*=============== DASHBOARD MAIN CONTENT ===============*/
-.dashboard-main {
-  padding: min(30px, 7%);
-}
-
-.dashboard-main p {
-  color: var(--dashboard-text);
-  margin-top: 5px;
-  margin-bottom: 15px;
-  line-height: 1.6;
-}
-
-.dashboard-content-box {
-  border: 1px solid var(--dashboard-border);
-  border-radius: 1em;
-  margin-bottom: 20px;
-  padding: min(3em, 15%);
-  background-color: var(--dashboard-white);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.dashboard-content-box h2,
-.dashboard-content-box p {
-  margin-top: 1em;
-}
-
-.dashboard-content-box h2 {
-  color: var(--dashboard-title);
-  font-family: var(--dashboard-second-font);
-  margin-bottom: 0.5em;
-}
-
-.dashboard-content-box h2:first-child {
-  margin-top: 0;
-}
-
 /*=============== DASHBOARD RESPONSIVE ===============*/
-@media(max-width: 800px){
+@media (max-width: 800px) {
   .dashboard-body {
     grid-template-columns: 1fr;
   }
   
   .dashboard-main {
-    padding: 2em 1em 60px 1em;
+    padding: 2em 1em 80px 1em;
+    font-size: var(--dashboard-small-size);
   }
   
   .dashboard-content-box {
     border: none;
     padding: 1.5em;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5em;
+  }
+  
+  /* Mobile font sizes */
+  .dashboard-content-box h1 {
+    font-size: 1.5rem;
+  }
+  
+  .dashboard-content-box h2 {
+    font-size: 1.25rem;
+  }
+  
+  .dashboard-content-box h3 {
+    font-size: 1rem;
+  }
+  
+  .dashboard-content-box p {
+    font-size: var(--dashboard-small-size);
   }
   
   #dashboard-sidebar {
-    height: 60px;
+    height: 70px;
     width: 100%;
     border-right: none;
     border-top: 1px solid var(--dashboard-border);
@@ -258,61 +252,129 @@
     top: unset;
     bottom: 0;
     z-index: 1000;
+    -webkit-overflow-scrolling: touch;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.98);
+    font-family: var(--dashboard-body-font);
+    overflow-x: auto;
   }
   
   #dashboard-sidebar > ul {
     padding: 0;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(6, 1fr);
     align-items: center;
-    overflow-x: scroll;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    height: 100%;
+  }
+  
+  #dashboard-sidebar > ul::-webkit-scrollbar {
+    display: none;
   }
   
   #dashboard-sidebar ul li {
     height: 100%;
+    min-width: 60px;
+  }
+  
+  /* Sembunyikan elemen yang tidak perlu di mobile */
+  #dashboard-sidebar ul li span,
+  #dashboard-sidebar ul li:first-child,
+  .dashboard-dropdown-btn svg:last-child,
+  #dashboard-sidebar .dashboard-logo {
+    display: none !important;
   }
   
   #dashboard-sidebar ul a,
   #dashboard-sidebar ul .dashboard-dropdown-btn {
     width: 60px;
-    height: 60px;
+    height: 70px;
     padding: 0;
     border-radius: 0;
     justify-content: center;
+    flex-direction: column;
+    gap: 0.25em;
+    font-size: 0.7rem;
+    text-align: center;
   }
   
-  #dashboard-sidebar ul li span,
-  #dashboard-sidebar ul li:first-child,
-  .dashboard-dropdown-btn svg:last-child {
-    display: none;
+  /* Tampilkan label kecil di mobile */
+  #dashboard-sidebar ul a span:first-child,
+  #dashboard-sidebar ul .dashboard-dropdown-btn span:first-child {
+    display: block;
+    font-size: 0.6rem;
+    text-align: center;
+    line-height: 1.1;
+    max-width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
   #dashboard-sidebar ul li .dashboard-sub-menu.show {
     position: fixed;
-    bottom: 60px;
+    bottom: 70px;
     left: 0;
     box-sizing: border-box;
-    height: 60px;
+    height: auto;
+    min-height: 60px;
+    max-height: 200px;
     width: 100%;
-    background-color: var(--dashboard-hover);
+    background-color: rgba(255, 255, 255, 0.98);
     border-top: 1px solid var(--dashboard-border);
     display: flex;
     justify-content: center;
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+    padding: 0.5rem 0;
   }
   
   #dashboard-sidebar ul li .dashboard-sub-menu.show > div {
     overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+    padding: 0 0.5rem;
+    width: 100%;
+    justify-content: flex-start;
   }
   
   #dashboard-sidebar ul li .dashboard-sub-menu.show li {
     display: inline-flex;
+    flex-shrink: 0;
   }
   
   #dashboard-sidebar ul li .dashboard-sub-menu.show a {
     box-sizing: border-box;
-    padding: 1em;
+    padding: 0.75rem 1rem;
     width: auto;
     justify-content: center;
     white-space: nowrap;
+    border-radius: 0.5rem;
+    margin: 0 0.25rem;
+    background-color: var(--dashboard-hover);
+    flex-direction: row;
+    height: auto;
+    font-size: 0.8rem;
+    font-family: var(--dashboard-body-font);
+  }
+  
+  #dashboard-sidebar a:active,
+  #dashboard-sidebar .dashboard-dropdown-btn:active {
+    background-color: var(--dashboard-border);
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+  
+  #dashboard-toggle-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: var(--dashboard-white);
+    border: 1px solid var(--dashboard-border);
+    z-index: 1002;
+    padding: 0.5rem;
+    font-family: var(--dashboard-body-font);
   }
 }

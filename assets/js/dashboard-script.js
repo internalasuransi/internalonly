@@ -1,3 +1,30 @@
+// Tambahkan function untuk handle touch events better
+function initDashboardMobile() {
+    const sidebar = document.getElementById("dashboard-sidebar");
+    
+    // Prevent body scroll ketika sub-menu terbuka di mobile
+    sidebar.addEventListener('touchmove', function(e) {
+        if (window.innerWidth <= 800 && this.scrollHeight > this.clientHeight) {
+            e.stopPropagation();
+        }
+    }, { passive: false });
+    
+    // Close sub-menus ketika tap outside di mobile
+    document.addEventListener('touchstart', function(event) {
+        const sidebar = document.getElementById("dashboard-sidebar");
+        const isClickInsideSidebar = sidebar.contains(event.target);
+        
+        if (!isClickInsideSidebar) {
+            closeAllDashboardSubMenus();
+        }
+    });
+}
+
+// Panggil function ini ketika DOM loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initDashboardMobile();
+});
+
 function toggleDashboardSidebar() {
     const toggleButton = document.getElementById("dashboard-toggle-btn")
     const sidebar = document.getElementById("dashboard-sidebar")
