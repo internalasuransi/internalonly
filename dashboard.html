@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>MyDashboard</title>
     <link rel="stylesheet" href="assets/css/dashboard-style.css">
     <script type="text/javascript" src="assets/js/dashboard-script.js" defer></script>
+    <script type="text/javascript" src="assets/js/dashboard-spa.js" defer></script>
 </head>
 <body class="dashboard-body">
     <nav id="dashboard-sidebar">
@@ -17,7 +18,7 @@
                 </button>
             </li>
             <li class="active">
-                <a href="dashboard.html">
+                <a href="home.html">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg>
                     <span>Home</span>
                 </a>
@@ -36,9 +37,9 @@
                 </button>
                 <ul class="dashboard-sub-menu">
                     <div>
-                        <li><a href="#">Folder</a></li>
-                        <li><a href="#">Document</a></li>
-                        <li><a href="#">Project</a></li>
+                        <li><a href="folder.html">Folder</a></li>
+                        <li><a href="document.html">Document</a></li>
+                        <li><a href="project.html">Project</a></li>
                     </div>
                 </ul>
             </li>
@@ -50,10 +51,10 @@
                 </button>
                 <ul class="dashboard-sub-menu">
                     <div>
-                        <li><a href="#">Work</a></li>
-                        <li><a href="#">Private</a></li>
-                        <li><a href="#">Coding</a></li>
-                        <li><a href="#">School</a></li>
+                        <li><a href="work.html">Work</a></li>
+                        <li><a href="private.html">Private</a></li>
+                        <li><a href="coding.html">Coding</a></li>
+                        <li><a href="school.html">School</a></li>
                     </div>
                 </ul>
             </li>
@@ -71,18 +72,50 @@
             </li>
         </ul>
     </nav>
+    
     <main class="dashboard-main">
-        <div class="dashboard-content-box">
-            <h2>Welcome to Dashboard</h2>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint culpa itaque aspernatur sed consequuntur totam dolorum velit odio, quos eos natus ad quaerat porro eligendi, aut, placeat modi dolores repudiandae!</p>  
-        </div>
-        <div class="dashboard-content-box">
-            <h2>Statistics Overview</h2>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum animi atque iure exercitationem vitae quasi repellendus pariatur similique, illum eius quaerat.</p>
-        </div>
-        <div class="dashboard-content-box">
-            <h2>Recent Activities</h2>
-            <p>Check out your recent activities and updates from the system.</p>
+        <!-- Header Section -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1 class="page-title" id="page-title">Overview</h1>
+            </div>
+            <div class="header-right">
+                <!-- Notification Bell -->
+                <button class="notification-bell">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
+                        <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z"/>
+                    </svg>
+                    <span class="notification-badge">3</span>
+                </button>
+                
+                <!-- User Profile -->
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <div class="avatar-placeholder">JD</div>
+                        <span class="status-indicator"></span>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">John Doe</span>
+                        <span class="user-status">Online</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Area -->
+        <div class="dashboard-content" id="dashboard-content">
+            <div class="dashboard-content-box">
+                <h2>Welcome to Dashboard</h2>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint culpa itaque aspernatur sed consequuntur totam dolorum velit odio, quos eos natus ad quaerat porro eligendi, aut, placeat modi dolores repudiandae!</p>  
+            </div>
+            <div class="dashboard-content-box">
+                <h2>Statistics Overview</h2>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum animi atque iure exercitationem vitae quasi repellendus pariatur similique, illum eius quaerat.</p>
+            </div>
+            <div class="dashboard-content-box">
+                <h2>Recent Activities</h2>
+                <p>Check out your recent activities and updates from the system.</p>
+            </div>
         </div>
     </main>
 </body>
