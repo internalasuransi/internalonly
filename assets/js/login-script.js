@@ -119,9 +119,17 @@ const handleLogin = async (event) => {
         showToast('Login Berhasil!', 'success');
         
         setTimeout(() => {
-            // Kita belum mengurus dashboard.html, tapi ini adalah tujuan akhirnya
-            window.location.href = 'dashboard.html'; 
-        }, 1500);
+            const userRole = localStorage.getItem('userRole');
+    
+                // Cek ROLE untuk menentukan tujuan redirect
+                if (userRole === 'Admin') {
+                    // Jika role-nya adalah Admin, arahkan ke halaman approval
+                    window.location.href = 'admin-approval.html'; 
+                } else {
+                    // Jika role-nya bukan Admin (misal: Marketing, Staf), arahkan ke dashboard utama
+                    window.location.href = 'dashboard.html'; 
+                }
+            }, 1500);
 
     } catch (error) {
         console.error("Login Error:", error);
