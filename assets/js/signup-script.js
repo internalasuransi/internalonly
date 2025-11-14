@@ -23,11 +23,16 @@ const db = firebase.firestore();
 // =================================================================
 function showToast(message, type = 'success') {
     const container = document.getElementById('toast-container');
-    if (!container) return; // Keluar jika container tidak ada
+    
+    if (!container) {
+        // Fallback ke alert bawaan jika container tidak ditemukan
+        alert(`${type.toUpperCase()}: ${message}`);
+        return;
+    }
 
     const toast = document.createElement('div');
     
-    // Styling dasar (ganti sesuai CSS framework Anda jika ada)
+    // Styling dasar
     let bgColor = '#4CAF50'; 
     let icon = 'ri-check-line';
     if (type === 'error') {
@@ -38,6 +43,7 @@ function showToast(message, type = 'success') {
         icon = 'ri-information-line';
     }
 
+    // Menggunakan kelas untuk styling (jika CSS sudah ada) atau style inline
     toast.style.cssText = `
         background-color: ${bgColor};
         color: white;
