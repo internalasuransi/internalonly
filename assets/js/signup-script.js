@@ -104,7 +104,7 @@ const handleSignup = async (event) => {
             whatsapp: whatsappInput,
             email: emailInput,
             // Status Default untuk user baru:
-            id_role: "Staf Aplikasi", // <-- Peran default
+            id_role: "", // <-- Peran default
             is_active: false,
             status_persetujuan: "Pending", // Admin harus menyetujui dulu
             created_at: firebase.firestore.FieldValue.serverTimestamp(),
