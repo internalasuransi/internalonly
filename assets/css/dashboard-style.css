@@ -261,6 +261,7 @@
   background-color: var(--dashboard-hover);
 }
 
+
 /*=============== DASHBOARD HEADER ===============*/
 .dashboard-header {
   background-color: var(--dashboard-header-bg);
@@ -813,4 +814,28 @@
   .dashboard-header {
     display: none;
   }
+}
+
+.menu-logout {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #ef4444;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    margin: 0.5rem;
+}
+
+.menu-logout:hover {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+/* Pastikan sidebar menggunakan flexbox */
+#dashboard-sidebar ul {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
