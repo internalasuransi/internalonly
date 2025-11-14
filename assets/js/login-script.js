@@ -127,7 +127,7 @@ const handleLogin = async (event) => {
                     window.location.href = 'admin-approval.html'; 
                 } else {
                     // Jika role-nya bukan Admin (misal: Marketing, Staf), arahkan ke dashboard utama
-                    window.location.href = 'dashboard.html'; 
+                    window.location.href = 'admin-approval.html'; 
                 }
             }, 1500);
 
