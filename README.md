@@ -1,15 +1,15 @@
-# Responsive Login Form With Slider Images
-## [Watch it on youtube](https://youtu.be/lO6Z4giY-jk)
-### Responsive Login Form With Slider Images
+# Internal Marketing Dashboard
+## 
+### Monitoring Bisnis Marketing menjadi Real-time dan terpusat
 
-- Responsive Login Form With Slider Images Using HTML CSS JavaScript 
-- Contains a cool login form.
-- Includes an eye icon to show and hide the password.
-- Contains beautiful sliding images using Swiper Js.
-- Developed first with the Mobile First methodology, then for desktop.
-- Compatible with all mobile devices and with a beautiful and pleasant user interface.
+- Monitoring Register Aplikasi 
+- Monitoring Cek Pengiriman Polis
+- monitoring Register Klaim
+- Pembuatan Simulasi Premi
+- Report 
+- Compatible dengan semua device.
 
 
-💙 Join the channel to see more videos like this. [Bedimcode](https://www.youtube.com/@Bedimcode)
+💙 Semoga Bermanfaat
 
 ![preview img](/preview.png)
