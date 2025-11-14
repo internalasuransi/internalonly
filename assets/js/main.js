@@ -47,23 +47,6 @@ window.closeAllSubMenus = function() {
     }
 }
 
-// ------------------------------------------
-// UTILITY: Kirim Request ke GAS
-// ------------------------------------------
-const sendGASRequest = async (data) => {
-    try {
-        const response = await fetch(GAS_WEB_APP_URL, {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: { 'Content-Type': 'application/json' }
-        });
-        return await response.json();
-    } catch (error) {
-        console.error("Fetch Error:", error);
-        return { success: false, message: "Terjadi kesalahan jaringan/server." };
-    }
-};
-
 // =======================================================
 // CORE LOGIC PER HALAMAN
 // =======================================================
