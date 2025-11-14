@@ -16,17 +16,21 @@ const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// 2. FUNGSI TOAST MESSAGE (Ditempatkan di sini agar bisa digunakan)
+// =================================================================
+// 2. FUNGSI TOAST MESSAGE (untuk notifikasi di kanan bawah)
+// =================================================================
 function showToast(message, type = 'success') {
     const container = document.getElementById('toast-container');
     
     if (!container) {
+        // Fallback ke alert bawaan jika container tidak ditemukan
         alert(`${type.toUpperCase()}: ${message}`);
         return;
     }
 
     const toast = document.createElement('div');
     
+    // Styling dasar
     let bgColor = '#4CAF50'; 
     let icon = 'ri-check-line';
     if (type === 'error') {
@@ -37,7 +41,7 @@ function showToast(message, type = 'success') {
         icon = 'ri-information-line';
     }
 
-    // Styling toast (agar terlihat seperti di screenshot)
+    // Menggunakan kelas untuk styling (jika CSS sudah ada) atau style inline
     toast.style.cssText = `
         background-color: ${bgColor};
         color: white;
