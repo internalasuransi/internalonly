@@ -69,12 +69,18 @@
       
                   <p class="login__description">Silahkan Masuk Untuk Melanjutkan</p>
       
-                              <form action="" class="login__form">
-                  <div class="login__content grid">
-                     <div class="login__box">
-                        <input type="email" name="email" placeholder="Email" class="login__input">
-                        <i class="ri-mail-line"></i>
-                     </div>
+                              <form action="" class="login__form" id="login-form"> <div class="login__content grid">
+                  <div class="login__box">
+            <input type="email" name="email" placeholder="Email" class="login__input" id="login-email">
+            <i class="ri-mail-line"></i>
+        </div>
+
+        <div class="login__box">
+            <input type="password" name="password" placeholder="Password" class="login__input" id="login-password">
+            <i class="ri-eye-line login__eye" id="loginEye"></i>
+        </div>
+    </div>
+    </form>
       
                      <div class="login__box">
                         <input type="password" name="password" placeholder="Password" class="login__input" id="loginPass">
@@ -88,11 +94,7 @@
                </form>
 
                <div id="toast-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
-                  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-                  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-                  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
-                  <script src="assets/js/login-script.js"></script>
-
+                  
                <span class=""><br></span>
    
                <span class="login__line">or</span><br>
@@ -116,5 +118,10 @@
       <script src="assets/js/swiper-bundle.min.js"></script>
 
       <!--=============== MAIN JS ===============-->
+
+         <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+         <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+         <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+         <script src="assets/js/login-script.js"></script>
    </body>
 </html>
