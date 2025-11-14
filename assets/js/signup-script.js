@@ -81,10 +81,10 @@ const handleSignup = async (event) => {
     event.preventDefault(); 
     
     // Ambil nilai input berdasarkan ID di signup.html
-    const fullnameInput = document.getElementById('fullname-input').value; 
-    const whatsappInput = document.getElementById('whatsapp-input').value; 
-    const emailInput = document.getElementById('email-input').value; 
-    const passwordInput = document.getElementById('password-input').value; 
+    const fullnameInput = document.getElementById('fullname').value; 
+    const whatsappInput = document.getElementById('whatsapp').value; 
+    const emailInput = document.getElementById('email').value; 
+    const passwordInput = document.getElementById('password').value; 
     
     // Validasi input
     if (!emailInput || !passwordInput || !fullnameInput || !whatsappInput) {
