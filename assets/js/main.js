@@ -1,6 +1,3 @@
-// PENTING: GANTI DENGAN URL GAS WEB APP ANDA
-const GAS_WEB_APP_URL = 'GANTI_DENGAN_WEB_APP_URL_ANDA'; 
-
 // =======================================================
 // GLOBAL UTILITY FUNCTIONS & DESIGN LOGIC
 // =======================================================
