@@ -87,8 +87,7 @@ async function fetchPendingUsers() {
                 <tr data-uid="${userId}">
                     <td>${user.fullname || 'N/A'}</td>
                     <td>${user.email || 'N/A'}</td>
-                    <td>${dropdownHTML}</td> <td>${date}</td>
-                    <td>
+                    <td>${dropdownHTML}</td> <td>${date}</td> <td>
                         <button class="approve-btn action-btn" data-uid="${userId}" data-action="approve">Approve</button>
                         <button class="reject-btn action-btn" data-uid="${userId}" data-action="reject">Reject</button>
                     </td>
@@ -141,7 +140,7 @@ async function handleAction(button, userId, action) {
 
         // 2. KUNCI SUKSES: Muat ulang daftar user. 
         // Ini akan merender ulang <tbody> TANPA user yang baru di-approve/reject.
-        fetchPendingUsers(); 
+        await fetchPendingUsers(); 
 
     } catch (error) {
         console.error("Error updating user status:", error);
