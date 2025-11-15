@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Internal Marketing</title>
     <link rel="stylesheet" href="assets/css/dashboard-style.css">
-    <script type="text/javascript" src="assets/js/dashboard-script.js" defer></script>
-    <script type="text/javascript" src="assets/js/dashboard-spa.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+    <script type="text/javascript" src="assets/js/dashboard.js" defer></script> 
+    <script type="text/javascript" src="assets/js/dashboard-spa.js" defer></script> 
+</head>
 </head>
 <body class="dashboard-body">
     <nav id="dashboard-sidebar">
@@ -18,13 +23,13 @@
                 </button>
             </li>
             <li id="dashboard" class="active">
-                <a href="#dashboard-content">
+                <a href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z"/></svg>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li id="todolist">
-                <a href="#dashboard-Judul">
+                <a href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M680-80q-83 0-141.5-58.5T480-280q0-83 58.5-141.5T680-480q83 0 141.5 58.5T880-280q0 83-58.5 141.5T680-80Zm67-105 28-28-75-75v-112h-40v128l87 87Zm-547 65q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h167q11-35 43-57.5t70-22.5q40 0 71.5 22.5T594-840h166q33 0 56.5 23.5T840-760v250q-18-13-38-22t-42-16v-212h-80v120H280v-120h-80v560h212q7 22 16 42t22 38H200Zm280-640q17 0 28.5-11.5T520-800q0-17-11.5-28.5T480-840q-17 0-28.5 11.5T440-800q0 17 11.5 28.5T480-760Z"/></svg>
                     <span>TodoList</span>
                 </a>
@@ -77,7 +82,7 @@
                 </a>
             </li>
 
-            <li id="calender">
+            <li id="calendar">
                 <a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z"/></svg>
                     <span>Calendar</span>
@@ -130,7 +135,7 @@
         </header>
 
         <!-- Dynamic Content Area -->
-        <div class="dashboard-content" id="dashboard-content">
+        <div class="dashboard-content" id="page-content">
             <div class="dashboard-content-box">
                 <h2>Welcome to Dashboard Internal</h2>
                 <p> Assalamulaikum wr, wb</p>
@@ -139,25 +144,8 @@
                 <p> Akhir kata, Assalamulaikum wr, wb</p> 
             </div>
         </div>
-        <div class="dashboard-content" id="dashboard-isi">
-            <div class="dashboard-content-box">
-                <h2>heheheheheheh</h2>
-                <p> Assalamulaikum wr, wb</p>
-                <p>Halo Teman-teman, saat ini kita sedang mengembangkan website internal untuk kita. Web ini dibuat untuk mempermudah kita dalam monitong dan Controlling.</p>
-                <p> Doa kan semoga website ini cepat selesai dan kita semua dapat menikmatinya.</p>  
-                <p> Akhir kata, Assalamulaikum wr, wb</p> 
-            </div>
         
-        </div>
-        <div class="dashboard-content" id="dashboard-Judul">
-            <div class="dashboard-content-box">
-                <h2>Tidak akan pernah</h2>
-                <p> Assalamulaikum wr, wb</p>
-                <p>Halo Teman-teman, saat ini kita sedang mengembangkan website internal untuk kita. Web ini dibuat untuk mempermudah kita dalam monitong dan Controlling.</p>
-                <p> Doa kan semoga website ini cepat selesai dan kita semua dapat menikmatinya.</p>  
-                <p> Akhir kata, Assalamulaikum wr, wb</p> 
-            </div>
-        </div>
+        
     </main>
 </body>
 </html>
