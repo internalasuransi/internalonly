@@ -1,6 +1,6 @@
 // assets/js/admin-script.js
 
-// 1. INISIALISASI FIREBASE (Harusnya sudah benar)
+// 1. KONFIGURASI DAN INISIALISASI
 const firebaseConfig = {
     // Pastikan ini adalah konfigurasi yang lengkap dan benar
     apiKey: "AIzaSyCzKWKanXp34LkluGAA6zJwwyr5unhTlAI",
@@ -12,131 +12,166 @@ const firebaseConfig = {
     measurementId: "G-6FVCS2EXR5"
 };
 
-// Pastikan inisialisasi hanya sekali
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 const auth = firebase.auth();
 const db = firebase.firestore();
-const usersTable = document.getElementById('pending-users-table');
-// Pastikan fungsi showToast sudah ada di main.js dan terhubung.
 
+// PENTING: ID elemen tabel harus disesuaikan.
+// Karena lo menggunakan insertRow() langsung, kita asumsikan ID nya adalah <tbody>
+const usersTableBody = document.getElementById('users-table-body'); // ASUMSI ID <tbody> ADALAH 'users-table-body'
+
+// Daftar Role yang akan muncul di dropdown
+const AVAILABLE_ROLES = [
+    'Marketing',
+    'Supervisor',
+    'Staff',
+    'Admin'
+];
+
+// **********************************************
+// NOTE: Tambahkan logika cek role di sini jika diperlukan 
+// **********************************************
+
+
+/**
+ * Fungsi untuk mengupdate tampilan tombol (Loading State)
+ */
+const setButtonLoadingState = (button, isLoading, loadingText, originalText) => {
+    button.disabled = isLoading;
+    button.textContent = isLoading ? loadingText : originalText;
+    // Trik: Nonaktifkan tombol lain di baris yang sama saat loading dimulai
+    const otherButton = button.closest('td').querySelector(`button:not([data-action="${button.dataset.action}"])`);
+    if (otherButton) otherButton.disabled = isLoading;
+};
 
 // 2. FUNGSI UTAMA: MENGAMBIL USER PENDING
 async function fetchPendingUsers() {
-    usersTable.innerHTML = '<tr><td colspan="5" style="text-align: center;">Memuat data...</td></tr>';
+    if (!usersTableBody) return;
+    usersTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Memuat data...</td></tr>';
     
     try {
-        // Query Firestore: Ambil user di koleksi 'users' yang statusnya 'Pending'
         const pendingSnapshot = await db.collection('users')
             .where('status_persetujuan', '==', 'Pending')
             .get();
 
         if (pendingSnapshot.empty) {
-            usersTable.innerHTML = '<tr><td colspan="5" style="text-align: center;">Tidak ada pengguna baru yang menunggu persetujuan.</td></tr>';
+            usersTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Tidak ada pengguna baru yang menunggu persetujuan.</td></tr>';
             return;
         }
 
-        usersTable.innerHTML = ''; // Kosongkan tabel
+        // PENTING: Kita akan menggunakan HTML string untuk render ulang,
+        // yang lebih clean daripada insertRow() saat me-reload.
+        let tableHTML = '';
         
         pendingSnapshot.forEach(doc => {
             const user = doc.data();
-            const userId = doc.id; // UID user
-            const row = usersTable.insertRow();
-
-            // Nama (Ganti user.nama ke user.fullname sesuai signup-script.js)
-            row.insertCell().textContent = user.fullname || 'N/A';
-            // Email
-            row.insertCell().textContent = user.email || 'N/A';
-            // Role
-            row.insertCell().textContent = user.id_role || 'Marketing (Default)'; 
-            // Tanggal Daftar (Ganti user.tgl_daftar ke user.created_at)
+            const userId = doc.id;
+            
             const date = user.created_at ? user.created_at.toDate().toLocaleDateString('id-ID') : 'N/A';
-            row.insertCell().textContent = date;
+            
+            // --- KODE DROPDOWN ROLE ---
+            const roleOptions = AVAILABLE_ROLES.map(role => 
+                `<option value="${role}" ${user.id_role === role ? 'selected' : ''}>${role}</option>`
+            ).join('');
+            
+            const dropdownHTML = `
+                <select class="role-dropdown" data-uid="${userId}" style="min-width: 100px;">
+                    ${roleOptions}
+                </select>
+            `;
 
-            // Kolom Aksi (Tombol)
-            const actionCell = row.insertCell();
-            actionCell.innerHTML = `
-                <button class="approve-btn" data-uid="${userId}" data-action="approve">Approve</button>
-                <button class="reject-btn" data-uid="${userId}" data-action="reject">Reject</button>
+            // --- RENDER BARIS ---
+            tableHTML += `
+                <tr data-uid="${userId}">
+                    <td>${user.fullname || 'N/A'}</td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td>${dropdownHTML}</td> <td>${date}</td>
+                    <td>
+                        <button class="approve-btn action-btn" data-uid="${userId}" data-action="approve">Approve</button>
+                        <button class="reject-btn action-btn" data-uid="${userId}" data-action="reject">Reject</button>
+                    </td>
+                </tr>
             `;
         });
+        
+        usersTableBody.innerHTML = tableHTML;
+        
     } catch (error) {
         console.error("Error fetching pending users:", error);
-        usersTable.innerHTML = `<tr><td colspan="5" style="color: red; text-align: center;">Gagal memuat data: ${error.message}</td></tr>`;
-        showToast('Gagal memuat data user pending.', 'error');
+        usersTableBody.innerHTML = `<tr><td colspan="5" style="color: red; text-align: center;">Gagal memuat data: ${error.message}</td></tr>`;
+        window.showToast('Gagal memuat data user pending.', 'error');
     }
 }
 
 // 3. FUNGSI HANDLE AKSI (APPROVE/REJECT)
 async function handleAction(button, userId, action) {
-    // 1. NONAKTIFKAN TOMBOL DAN UBAH TAMPILAN UNTUK LOADING STATE
     const originalText = button.textContent;
     const isApprove = action === 'approve';
     
-    button.disabled = true;
-    button.textContent = isApprove ? 'Memproses...' : 'Menolak...';
-
-    // Opsional: Nonaktifkan tombol yang lain di baris yang sama (optional)
-    const otherButton = button.closest('td').querySelector(`button:not([data-action="${action}"])`);
-    if (otherButton) otherButton.disabled = true;
-
+    // 1. AKTIFKAN LOADING STATE PADA TOMBOL
+    setButtonLoadingState(button, true, isApprove ? 'Memproses...' : 'Menolak...', originalText);
 
     try {
         const docRef = db.collection('users').doc(userId);
         
         if (isApprove) {
+            // Ambil nilai Role dari dropdown di baris yang sama
+            const row = button.closest('tr');
+            const roleSelect = row.querySelector('.role-dropdown');
+            const selectedRole = roleSelect ? roleSelect.value : 'Marketing'; // Default fallback
+            
             await docRef.update({
                 status_persetujuan: 'Approved',
-                is_active: true
+                id_role: selectedRole, // Set Role yang dipilih
+                is_active: true,
+                approved_at: firebase.firestore.FieldValue.serverTimestamp()
             });
-            showToast(`User ${userId} berhasil disetujui!`, 'success');
+            window.showToast(`User ${userId} berhasil disetujui sebagai ${selectedRole}!`, 'success');
 
         } else if (action === 'reject') {
             await docRef.update({
                 status_persetujuan: 'Rejected',
-                is_active: false
+                is_active: false,
+                rejected_at: firebase.firestore.FieldValue.serverTimestamp()
             });
-            showToast(`User ${userId} berhasil ditolak.`, 'error');
+            window.showToast(`User ${userId} berhasil ditolak.`, 'error');
         }
 
-        // 3. Muat ulang daftar user setelah aksi
-        fetchPendingUsers();
+        // 2. KUNCI SUKSES: Muat ulang daftar user. 
+        // Ini akan merender ulang <tbody> TANPA user yang baru di-approve/reject.
+        fetchPendingUsers(); 
 
     } catch (error) {
         console.error("Error updating user status:", error);
-        showToast(`Gagal memproses aksi: ${error.message}`, 'error');
+        window.showToast(`Gagal memproses aksi: ${error.message}`, 'error');
         
-        // 4. KEMBALIKAN TOMBOL KE KEADAAN SEMULA JIKA GAGAL
-        button.disabled = false;
-        button.textContent = originalText;
-        if (otherButton) otherButton.disabled = false;
-
+        // 3. KEMBALIKAN TOMBOL KE KEADAAN SEMULA JIKA GAGAL
+        setButtonLoadingState(button, false, isApprove ? 'Memproses...' : 'Menolak...', originalText);
     }
 }
 
 // 4. HOOK UP DOM
 document.addEventListener('DOMContentLoaded', () => {
-    // PENTING: Cek Otentikasi Admin di sini (belum kita buat)
-    
-    // Muat user pending
+    // 1. Muat user pending saat DOM siap
     fetchPendingUsers();
 
-    // Tambahkan event listener untuk tombol di tabel (delegasi event)
-    usersTable.addEventListener('click', (event) => {
-        const target = event.target;
-        
-        // Cek apakah yang diklik adalah tombol Approve atau Reject
-        if (target.tagName === 'BUTTON' && 
-           (target.classList.contains('approve-btn') || target.classList.contains('reject-btn'))) 
-        {
-            const userId = target.getAttribute('data-uid');
-            const action = target.getAttribute('data-action');
+    // 2. Tambahkan event listener untuk tombol di tabel (delegasi event)
+    if (usersTableBody) {
+        usersTableBody.addEventListener('click', (event) => {
+            const target = event.target;
             
-            // Panggil handleAction dan kirim elemen tombolnya juga
-            if (userId && action) {
-                handleAction(target, userId, action);
+            // Cek apakah yang diklik adalah tombol Approve atau Reject (berdasarkan class .action-btn)
+            if (target.tagName === 'BUTTON' && target.classList.contains('action-btn')) 
+            {
+                const userId = target.getAttribute('data-uid');
+                const action = target.getAttribute('data-action');
+                
+                if (userId && action) {
+                    handleAction(target, userId, action);
+                }
             }
-        }
-    });
+        });
+    }
 });
