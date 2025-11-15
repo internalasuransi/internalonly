@@ -64,9 +64,9 @@ const handleSignUp = async (event) => {
             fullname: fullname,
             email: email,
             whatsapp: whatsapp, 
-            id_role: 'Marketing', 
+            id_role: '', 
             status_persetujuan: 'Pending', 
-            is_active: true, 
+            is_active: false, 
             created_at: firebase.firestore.FieldValue.serverTimestamp(),
         });
 

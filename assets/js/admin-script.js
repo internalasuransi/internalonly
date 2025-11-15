@@ -20,7 +20,7 @@ const db = firebase.firestore();
 
 // PENTING: ID elemen tabel harus disesuaikan.
 // Karena lo menggunakan insertRow() langsung, kita asumsikan ID nya adalah <tbody>
-const usersTableBody = document.getElementById('users-table-body'); // ASUMSI ID <tbody> ADALAH 'users-table-body'
+const usersTableBody = document.getElementById('pending-users-table'); // ASUMSI ID <tbody> ADALAH 'users-table-body'
 
 // Daftar Role yang akan muncul di dropdown
 const AVAILABLE_ROLES = [
