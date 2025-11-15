@@ -1,6 +1,6 @@
 // assets/js/login-script.js
 
-// 1. INISIALISASI FIREBASE
+// 1. INISIALISASI FIREBASE & HOOKS
 const firebaseConfig = {
     // Pastikan ini adalah konfigurasi yang lengkap dan benar
     apiKey: "AIzaSyCzKWKanXp34LkluGAA6zJwwyr5unhTlAI",
@@ -12,142 +12,100 @@ const firebaseConfig = {
     measurementId: "G-6FVCS2EXR5"
 };
 
-const app = firebase.initializeApp(firebaseConfig);
+// Pastikan inisialisasi hanya sekali
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// =================================================================
-// 2. FUNGSI TOAST MESSAGE (untuk notifikasi di kanan bawah)
-// =================================================================
-function showToast(message, type = 'success') {
-    const container = document.getElementById('toast-container');
-    
-    if (!container) {
-        // Fallback ke alert bawaan jika container tidak ditemukan
-        alert(`${type.toUpperCase()}: ${message}`);
-        return;
-    }
+const loginForm = document.getElementById('login-form');
+const loginButton = document.getElementById('login-button'); 
 
-    const toast = document.createElement('div');
-    
-    // Styling dasar
-    let bgColor = '#4CAF50'; 
-    let icon = 'ri-check-line';
-    if (type === 'error') {
-        bgColor = '#F44336';
-        icon = 'ri-close-line';
-    } else if (type === 'info') {
-        bgColor = '#2196F3';
-        icon = 'ri-information-line';
-    }
-
-    // Menggunakan kelas untuk styling (jika CSS sudah ada) atau style inline
-    toast.style.cssText = `
-        background-color: ${bgColor};
-        color: white;
-        padding: 10px 15px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        opacity: 0;
-        transition: opacity 0.5s, transform 0.5s;
-        transform: translateX(100%);
-    `;
-    
-    toast.innerHTML = `<i class="${icon}" style="margin-right: 8px;"></i>${message}`;
-    container.appendChild(toast);
-    
-    // Animate in
-    setTimeout(() => {
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateX(0)';
-    }, 10);
-
-    // Animate out and remove
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(100%)';
-        setTimeout(() => toast.remove(), 500);
-    }, 5000);
-}
-
-// 3. FUNGSI HANDLE LOGIN
+// 2. FUNGSI UTAMA: HANDLE LOGIN
 const handleLogin = async (event) => {
-    event.preventDefault(); 
+    event.preventDefault();
+
+    if (!loginButton) return; 
+
+    // Ambil data dari form
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
     
-    // Ambil nilai input berdasarkan ID yang sudah kita set
-    const emailInput = document.getElementById('login-email').value;
-    const passwordInput = document.getElementById('login-password').value;
-    
-    if (!emailInput || !passwordInput) {
+    // --- VALIDASI AWAL ---
+    if (!email || !password) {
         showToast('Email dan Password wajib diisi!', 'error');
         return;
     }
 
-    try {
-        // 1. Login dengan Firebase Authentication
-        const userCredential = await auth.signInWithEmailAndPassword(emailInput, passwordInput);
-        const userUID = userCredential.user.uid;
+    // TAMPILKAN LOADING STATE
+    window.setLoadingState(loginButton, true, 'Masuk...', 'Login');
 
-        // 2. Ambil data profil dari Firestore
+    try {
+        // 1. Login dengan Firebase Auth
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const userUID = userCredential.user.uid;
+        
+        // 2. Ambil data user dari Firestore
         const userDoc = await db.collection('users').doc(userUID).get();
         
         if (!userDoc.exists) {
-            showToast('Profil user tidak ditemukan di database.', 'error');
-            auth.signOut(); 
-            return;
+             showToast('Data user tidak ditemukan di database.', 'error');
+             await auth.signOut();
+             return; // Keluar dari proses
         }
 
         const userData = userDoc.data();
 
-        // 3. Periksa Status Persetujuan (Harus 'Approved')
+        // 3. Cek status persetujuan (Admin Approval)
         if (userData.status_persetujuan !== 'Approved') {
-            showToast('Akun Anda masih Menunggu Persetujuan Admin.', 'info');
-            auth.signOut(); 
-            return;
-        }
-        
-        // 4. Periksa Status Aktif (Harus true)
-        if (userData.is_active !== true) {
-            showToast('Akun Anda telah dinonaktifkan.', 'error');
-            auth.signOut(); 
-            return;
+             await auth.signOut(); // Log out user yang belum diapprove
+             showToast('Akun Anda belum disetujui Admin. Silakan tunggu.', 'error');
+             return;
         }
 
+        // 4. Login Berhasil: Simpan data ke Local Storage
+        localStorage.setItem('userUID', userUID);
+        localStorage.setItem('userRole', userData.id_role);
+        localStorage.setItem('isLoggedIn', 'true');
 
-        // 5. Login Berhasil & Redirect ke Dashboard
         showToast('Login Berhasil!', 'success');
         
+        // 5. REDIRECT BERDASARKAN ROLE
         setTimeout(() => {
             const userRole = localStorage.getItem('userRole');
-    
-                // Cek ROLE untuk menentukan tujuan redirect
-                if (userRole === 'Admin') {
-                    // Jika role-nya adalah Admin, arahkan ke halaman approval
-                    window.location.href = 'admin-approval.html'; 
-                } else {
-                    // Jika role-nya bukan Admin (misal: Marketing, Staf), arahkan ke dashboard utama
-                    window.location.href = 'admin-approval.html'; 
-                }
-            }, 1500);
+            if (userRole === 'Admin') {
+                window.location.href = 'admin-approval.html'; 
+            } else {
+                window.location.href = 'dashboard.html'; 
+            }
+        }, 1500);
+        
+        // Catatan: Loading state akan di-reset oleh redirect.
+        // Jika redirect cepat, ini tidak masalah.
 
     } catch (error) {
         console.error("Login Error:", error);
-        let errorMessage = 'Login Gagal. Cek kredensial Anda.';
-        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-            errorMessage = 'Email atau Password salah.';
-        } else if (error.code === 'auth/too-many-requests') {
-            errorMessage = 'Terlalu banyak percobaan, akun diblokir sementara.';
+        let errorMessage = 'Login gagal. Cek email dan password Anda.';
+        if (error.code === 'auth/wrong-password') {
+            errorMessage = 'Password salah.';
+        } else if (error.code === 'auth/user-not-found') {
+            errorMessage = 'Akun tidak terdaftar.';
+        } else if (error.code === 'auth/invalid-email') {
+             errorMessage = 'Format email tidak valid.';
         }
         showToast(errorMessage, 'error');
+
+    } finally {
+        // HENTIKAN LOADING STATE jika ada error dan tidak terjadi redirect
+        if (window.location.href.endsWith('index.html') || window.location.href.endsWith('/')) {
+            window.setLoadingState(loginButton, false, 'Masuk...', 'Login');
+        }
     }
 };
 
-
-// 4. HOOK UP DOM (Menghubungkan fungsi ke form setelah semua HTML dimuat)
-document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
-    }
-});
+// 3. HOOK UP DOM
+if (loginForm) {
+    // Tombol Login sudah memiliki teks 'Login' di HTML
+    loginForm.addEventListener('submit', handleLogin);
+}

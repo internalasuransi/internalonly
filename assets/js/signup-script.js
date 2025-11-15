@@ -1,142 +1,98 @@
 // assets/js/signup-script.js
 
-// =================================================================
-// 1. INISIALISASI FIREBASE (WAJIB DIGANTI DENGAN CONFIG ANDA)
-// =================================================================
+// 1. INISIALISASI FIREBASE & HOOKS
 const firebaseConfig = {
-  apiKey: "AIzaSyCzKWKanXp34LkluGAA6zJwwyr5unhTlAI",
-  authDomain: "internal-asuransi.firebaseapp.com",
-  projectId: "internal-asuransi",
-  storageBucket: "internal-asuransi.firebasestorage.app",
-  messagingSenderId: "548382017288",
-  appId: "1:548382017288:web:6cd13753a3388162b6cebd",
-  measurementId: "G-6FVCS2EXR5"
+    // Pastikan ini adalah konfigurasi yang lengkap dan benar
+    apiKey: "AIzaSyCzKWKanXp34LkluGAA6zJwwyr5unhTlAI",
+    authDomain: "internal-asuransi.firebaseapp.com",
+    projectId: "internal-asuransi",
+    storageBucket: "internal-asuransi.firebasestorage.app",
+    messagingSenderId: "548382017288",
+    appId: "1:548382017288:web:6cd13753a3388162b6cebd",
+    measurementId: "G-6FVCS2EXR5"
 };
 
-// Inisialisasi Aplikasi Firebase
-const app = firebase.initializeApp(firebaseConfig);
+// Pastikan inisialisasi hanya sekali
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// =================================================================
-// 2. FUNGSI TOAST MESSAGE (untuk notifikasi di kanan bawah)
-// =================================================================
-function showToast(message, type = 'success') {
-    const container = document.getElementById('toast-container');
+const signupForm = document.getElementById('signup-form');
+const signupButton = document.getElementById('signup-button'); 
+
+// 2. FUNGSI UTAMA: HANDLE SIGN UP
+const handleSignUp = async (event) => {
+    event.preventDefault();
+
+    if (!signupButton) return;
     
-    if (!container) {
-        // Fallback ke alert bawaan jika container tidak ditemukan
-        alert(`${type.toUpperCase()}: ${message}`);
+    // Ambil data dari form
+    const fullname = document.getElementById('signup-fullname').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const passwordConfirm = document.getElementById('signup-password-confirm').value;
+
+    // --- VALIDASI AWAL ---
+    if (!fullname || !email || !password || !passwordConfirm) {
+        showToast('Semua kolom wajib diisi!', 'error');
         return;
     }
-
-    const toast = document.createElement('div');
-    
-    // Styling dasar
-    let bgColor = '#4CAF50'; 
-    let icon = 'ri-check-line';
-    if (type === 'error') {
-        bgColor = '#F44336';
-        icon = 'ri-close-line';
-    } else if (type === 'info') {
-        bgColor = '#2196F3';
-        icon = 'ri-information-line';
-    }
-
-    // Menggunakan kelas untuk styling (jika CSS sudah ada) atau style inline
-    toast.style.cssText = `
-        background-color: ${bgColor};
-        color: white;
-        padding: 10px 15px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        opacity: 0;
-        transition: opacity 0.5s, transform 0.5s;
-        transform: translateX(100%);
-    `;
-    
-    toast.innerHTML = `<i class="${icon}" style="margin-right: 8px;"></i>${message}`;
-    container.appendChild(toast);
-    
-    // Animate in
-    setTimeout(() => {
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateX(0)';
-    }, 10);
-
-    // Animate out and remove
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(100%)';
-        setTimeout(() => toast.remove(), 500);
-    }, 5000);
-}
-
-
-// =================================================================
-// 3. FUNGSI HANDLE SIGNUP (Membuat User & Profil Firestore)
-// =================================================================
-const handleSignup = async (event) => {
-    event.preventDefault(); 
-    
-    // Ambil nilai input berdasarkan ID di signup.html
-    const fullnameInput = document.getElementById('fullname-input').value; 
-    const whatsappInput = document.getElementById('whatsapp-input').value; 
-    const emailInput = document.getElementById('email-input').value; 
-    const passwordInput = document.getElementById('password-input').value;
-    
-    // Validasi input
-    if (!emailInput || !passwordInput || !fullnameInput || !whatsappInput) {
-        showToast('Semua field wajib diisi!', 'error');
+    if (password.length < 6) {
+        showToast('Password minimal 6 karakter.', 'error');
         return;
     }
+    if (password !== passwordConfirm) {
+        showToast('Konfirmasi password tidak cocok!', 'error');
+        return;
+    }
+    
+    // TAMPILKAN LOADING STATE
+    window.setLoadingState(signupButton, true, 'Mendaftar...', 'Daftar');
 
     try {
-        // 1. Buat User di Firebase Authentication
-        const userCredential = await auth.createUserWithEmailAndPassword(emailInput, passwordInput);
+        // 1. Buat user di Firebase Auth
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         const userUID = userCredential.user.uid;
 
-        // 2. Simpan Profil User ke Koleksi 'users' di Firestore
+        // 2. Simpan data user ke Firestore (dengan status Pending)
         await db.collection('users').doc(userUID).set({
-            uid: userUID,
-            fullname: fullnameInput,
-            whatsapp: whatsappInput,
-            email: emailInput,
-            // Status Default untuk user baru:
-            id_role: "", // <-- Peran default
-            is_active: false,
-            status_persetujuan: "Pending", // Admin harus menyetujui dulu
+            fullname: fullname,
+            email: email,
+            id_role: 'Marketing', // Role default
+            status_persetujuan: 'Pending', // Status awal, menunggu Admin
+            is_active: true, // Default aktif
             created_at: firebase.firestore.FieldValue.serverTimestamp(),
         });
 
-        // 3. Beri Feedback Sukses & Redirect
-        showToast('Pendaftaran Berhasil! Menunggu persetujuan Admin.', 'success');
+        showToast('Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan Admin.', 'success');
         
+        // 3. Redirect ke halaman login setelah daftar
         setTimeout(() => {
-            window.location.href = 'index.html'; // Kembali ke halaman login
+            window.location.href = 'index.html'; 
         }, 3000);
 
     } catch (error) {
         console.error("Signup Error:", error);
-        let errorMessage = 'Pendaftaran Gagal. Cek email/password.';
+        let errorMessage = 'Pendaftaran gagal.';
         if (error.code === 'auth/email-already-in-use') {
             errorMessage = 'Email sudah terdaftar.';
         } else if (error.code === 'auth/weak-password') {
-             errorMessage = 'Password minimal 6 karakter.';
+            errorMessage = 'Password terlalu lemah (min. 6 karakter).';
         }
         showToast(errorMessage, 'error');
+        
+    } finally {
+        // HENTIKAN LOADING STATE jika ada error dan tidak terjadi redirect
+        if (window.location.href.endsWith('signup.html')) {
+            window.setLoadingState(signupButton, false, 'Mendaftar...', 'Daftar');
+        }
     }
 };
 
-
-// =================================================================
-// 4. HOOK UP DOM (Menghubungkan fungsi ke form)
-// =================================================================
-document.addEventListener('DOMContentLoaded', () => {
-    // Pastikan Anda sudah menambahkan id="signup-form" ke tag <form> Anda
-    const signupForm = document.getElementById('signup-form');
-    if (signupForm) {
-        signupForm.addEventListener('submit', handleSignup);
-    }
-});
+// 3. HOOK UP DOM
+if (signupForm) {
+    // Tombol Signup sudah memiliki teks 'Daftar' di HTML
+    signupForm.addEventListener('submit', handleSignUp);
+}
