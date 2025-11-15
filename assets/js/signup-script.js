@@ -2,16 +2,13 @@
 
 // 1. INISIALISASI FIREBASE & HOOKS
 const firebaseConfig = {
-    // Pastikan ini adalah konfigurasi yang lengkap dan benar
     apiKey: "AIzaSyCzKWKanXp34LkluGAA6zJwwyr5unhTlAI",
     authDomain: "internal-asuransi.firebaseapp.com",
     projectId: "internal-asuransi",
-    storageBucket: "internal-asuransi.firebasestorage.app",
-    messagingSenderId: "548382017288",
-    appId: "1:548382017288:web:6cd13753a3388162b6cebd",
-    measurementId: "G-6FVCS2EXR5"
+    // ... config lainnya
 };
 
+// Pastikan inisialisasi hanya sekali
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
@@ -19,22 +16,25 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 const signupForm = document.getElementById('signup-form');
-const signupButton = document.getElementById('signup-button'); 
+const signupButton = document.getElementById('daftar-button') || document.getElementById('signup-button'); // Ambil salah satu ID tombol
 
 // 2. FUNGSI UTAMA: HANDLE SIGN UP
 const handleSignUp = async (event) => {
     event.preventDefault();
 
-    if (!signupButton) return;
+    if (!signupButton) {
+        console.error("Signup button element not found.");
+        return;
+    }
     
-    // Ambil data dari form (Hanya ambil SATU field password)
-    const fullname = document.getElementById('signup-fullname').value;
-    const whatsapp = document.getElementById('signup-whatsapp').value; // Asumsi lo punya ID ini
-    const email = document.getElementById('signup-email').value;
+    // Ambil data dari form
+    const fullname = document.getElementById('signup-fullname').value.trim();
+    // Asumsi ID WhatsApp adalah 'signup-whatsapp' sesuai data lo
+    const whatsapp = document.getElementById('signup-whatsapp').value.trim(); 
+    const email = document.getElementById('signup-email').value.trim();
     const password = document.getElementById('signup-password').value;
     
-    // --- VALIDASI AWAL ---
-    // (Menghapus pengecekan passwordConfirm yang tidak ada)
+    // --- VALIDASI AWAL (Client-side) ---
     if (!fullname || !whatsapp || !email || !password) {
         showToast('Semua kolom wajib diisi!', 'error');
         return;
@@ -44,8 +44,8 @@ const handleSignUp = async (event) => {
         return;
     }
     
-    // TAMPILKAN LOADING STATE
-    window.setLoadingState(signupButton, true, 'Mendaftar...', 'Daftar');
+    // TAMPILKAN LOADING STATE (Loading dimulai setelah semua validasi awal lolos)
+    window.setLoadingState(signupButton, true, 'Mendaftar...', 'Daftar Sekarang');
 
     try {
         // 1. Buat user di Firebase Auth
@@ -56,7 +56,7 @@ const handleSignUp = async (event) => {
         await db.collection('users').doc(userUID).set({
             fullname: fullname,
             email: email,
-            whatsapp: whatsapp, // Simpan nomor WhatsApp
+            whatsapp: whatsapp, 
             id_role: 'Marketing', // Role default
             status_persetujuan: 'Pending', // Status awal, menunggu Admin
             is_active: true, // Default aktif
@@ -66,6 +66,7 @@ const handleSignUp = async (event) => {
         showToast('Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan Admin.', 'success');
         
         // 3. Redirect ke halaman login setelah daftar
+        // Tidak perlu set loading false di sini karena akan langsung redirect
         setTimeout(() => {
             window.location.href = 'index.html'; 
         }, 3000);
@@ -82,15 +83,25 @@ const handleSignUp = async (event) => {
         }
         showToast(errorMessage, 'error');
         
-    } finally {
-        // HENTIKAN LOADING STATE jika ada error dan tidak terjadi redirect
-        if (window.location.href.endsWith('signup.html')) {
-            window.setLoadingState(signupButton, false, 'Mendaftar...', 'Daftar');
-        }
-    }
+        // HENTIKAN LOADING STATE jika terjadi error
+        window.setLoadingState(signupButton, false, 'Mendaftar...', 'Daftar Sekarang');
+
+    } 
+    // Tidak perlu blok finally di sini karena loading state di-reset saat error,
+    // dan tidak di-reset saat sukses (karena langsung redirect).
 };
 
 // 3. HOOK UP DOM
-if (signupForm) {
-    signupForm.addEventListener('submit', handleSignUp);
-}
+document.addEventListener('DOMContentLoaded', () => {
+    // A. Fix bug tombol disabled saat initial load
+    if (signupButton) {
+        // Ambil teks asli dari tombol HTML (misal: "Daftar Sekarang")
+        const originalText = signupButton.textContent.trim() || 'Daftar Sekarang'; 
+        window.setLoadingState(signupButton, false, 'Mendaftar...', originalText);
+    }
+    
+    // B. Tambahkan Event Listener
+    if (signupForm) {
+        signupForm.addEventListener('submit', handleSignUp);
+    }
+});
