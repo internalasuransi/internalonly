@@ -59,8 +59,10 @@ const handleLogin = async (event) => {
 
         // 3. Cek status persetujuan (Admin Approval)
         if (userData.status_persetujuan !== 'Approved') {
-             await auth.signOut(); // Log out user yang belum diapprove
+             await auth.signOut();
              showToast('Akun Anda belum disetujui Admin. Silakan tunggu.', 'error');
+             // PENTING: Panggil set loading false di sini karena proses gagal
+             window.setLoadingState(loginButton, false, 'Masuk...', 'Login');
              return;
         }
 
@@ -98,6 +100,7 @@ const handleLogin = async (event) => {
 
     } finally {
         // HENTIKAN LOADING STATE jika ada error dan tidak terjadi redirect
+        // Blok ini sudah benar, akan di-reset jika terjadi error di try/catch
         if (window.location.href.endsWith('index.html') || window.location.href.endsWith('/')) {
             window.setLoadingState(loginButton, false, 'Masuk...', 'Login');
         }

@@ -12,7 +12,6 @@ const firebaseConfig = {
     measurementId: "G-6FVCS2EXR5"
 };
 
-// Pastikan inisialisasi hanya sekali
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
@@ -28,23 +27,20 @@ const handleSignUp = async (event) => {
 
     if (!signupButton) return;
     
-    // Ambil data dari form
+    // Ambil data dari form (Hanya ambil SATU field password)
     const fullname = document.getElementById('signup-fullname').value;
+    const whatsapp = document.getElementById('signup-whatsapp').value; // Asumsi lo punya ID ini
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;
-    const passwordConfirm = document.getElementById('signup-password-confirm').value;
-
+    
     // --- VALIDASI AWAL ---
-    if (!fullname || !email || !password || !passwordConfirm) {
+    // (Menghapus pengecekan passwordConfirm yang tidak ada)
+    if (!fullname || !whatsapp || !email || !password) {
         showToast('Semua kolom wajib diisi!', 'error');
         return;
     }
     if (password.length < 6) {
         showToast('Password minimal 6 karakter.', 'error');
-        return;
-    }
-    if (password !== passwordConfirm) {
-        showToast('Konfirmasi password tidak cocok!', 'error');
         return;
     }
     
@@ -60,6 +56,7 @@ const handleSignUp = async (event) => {
         await db.collection('users').doc(userUID).set({
             fullname: fullname,
             email: email,
+            whatsapp: whatsapp, // Simpan nomor WhatsApp
             id_role: 'Marketing', // Role default
             status_persetujuan: 'Pending', // Status awal, menunggu Admin
             is_active: true, // Default aktif
@@ -80,6 +77,8 @@ const handleSignUp = async (event) => {
             errorMessage = 'Email sudah terdaftar.';
         } else if (error.code === 'auth/weak-password') {
             errorMessage = 'Password terlalu lemah (min. 6 karakter).';
+        } else if (error.code === 'auth/invalid-email') {
+             errorMessage = 'Format email tidak valid.';
         }
         showToast(errorMessage, 'error');
         
@@ -93,6 +92,5 @@ const handleSignUp = async (event) => {
 
 // 3. HOOK UP DOM
 if (signupForm) {
-    // Tombol Signup sudah memiliki teks 'Daftar' di HTML
     signupForm.addEventListener('submit', handleSignUp);
 }
