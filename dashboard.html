@@ -4,15 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Internal Marketing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
     <link rel="stylesheet" href="assets/css/dashboard-style.css">
+    <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script type="text/javascript" src="assets/js/dashboard.js" defer></script>
+    <script type="text/javascript" src="assets/js/dashboard-spa.js" defer></script>
+    
+      
 
-    <script type="text/javascript" src="assets/js/dashboard.js" defer></script> 
-    <script type="text/javascript" src="assets/js/dashboard-spa.js" defer></script> 
 </head>
-</head>
+
 <body class="dashboard-body">
     <nav id="dashboard-sidebar">
         <ul>
@@ -60,7 +64,6 @@
             </li>
 
             <li id="line"><span></span><br></li>
-
            <li id="users">
                 <a href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M640-400q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM400-160v-76q0-21 10-40t28-30q45-27 95.5-40.5T640-360q56 0 106.5 13.5T842-306q18 11 28 30t10 40v76H400Zm86-80h308q-35-20-74-30t-80-10q-41 0-80 10t-74 30Zm154-240q17 0 28.5-11.5T680-520q0-17-11.5-28.5T640-560q-17 0-28.5 11.5T600-520q0 17 11.5 28.5T640-480Zm0-40Zm0 280ZM120-400v-80h320v80H120Zm0-320v-80h480v80H120Zm324 160H120v-80h360q-14 17-22.5 37T444-560Z"/></svg>
@@ -88,11 +91,13 @@
                     <span>Calendar</span>
                 </a>
             </li>
+
             <li id="profile">
                 <a href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
                     <span>Profile</span>
                 </a>
+
             </li>
             <li id="logout" class="menu-logout-container">
                 <a href="index.html" class="menu-logout">
@@ -104,21 +109,27 @@
             </li>
         </ul>
     </nav>
-    
+
     <main class="dashboard-main">
         <!-- Header Section -->
         <header class="dashboard-header">
                 <div class="header-left">
-                <h1 class="page-title" id="page-title">Dashboard Overview</h1>
+                    <h1 class="page-title" id="page-title">Dashboard Overview</h1>
                 </div>
                 <div class="header-right">
-                    <div class="notification-container"> <button class="notification-bell" id="notification-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
-                        <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z"/>
-                        </svg>
-                        <span class="notification-badge" id="notification-count">0</span>
-                        </button>
-                    
+                <div class="notification-container"> 
+                    <button id="user-profile-button" class="user-profile">
+                        <div class="user-avatar">
+                            <div class="avatar-placeholder" id="user-initials">JD</div>
+                            <span class="status-indicator"></span>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name" id="user-full-name">Internal Asuransi</span>
+                            <span class="user-role" id="user-role-display">Admin</span>
+                        </div>
+                        <span class="dropdown-arrow">&#9660;</span>
+                    </button>               
+
                         <div id="notification-dropdown" class="notification-dropdown" style="display: none;">
                             <div class="dropdown-header">
                                 <h4>Notifikasi Baru</h4>
@@ -128,19 +139,27 @@
                                 <li class="empty-message">Tidak ada notifikasi baru.</li>
                             </ul>
                         </div>
-                    </div>
-                
-                    <!-- User Profile -->
-                    <div class="user-profile">
-                        <div class="user-avatar">
-                            <div class="avatar-placeholder">JD</div>
-                            <span class="status-indicator"></span>
+                </div>
+
+                <!-- User Profile -->
+                <div id="profile-dropdown" class="profile-dropdown" style="display: none;">
+                    <div class="dropdown-header">
+                        <div class="user-avatar large">
+                            <div class="avatar-placeholder large" id="dropdown-initials">JD</div>
                         </div>
-                        <div class="user-info">
-                            <span class="user-name">Internal Asuransi</span>
-                            <span class="user-status">Online</span>
+                        <div class="profile-details">
+                            <p class="name" id="dropdown-full-name">Internal Asuransi</p>
+                            <p class="role" id="dropdown-role">Admin</p>
                         </div>
                     </div>
+                    <ul class="profile-menu-list" id="profile-menu-list">
+                        <li><a href="#" data-page="profile"><i class="fas fa-user-circle"></i> Profil Saya</a></li>
+                        <li><a href="#" id="logout-button"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
+                    </ul>
+                </div>
+
+
+            </div>
             </div>
         </header>
 
@@ -151,11 +170,9 @@
                 <p> Assalamulaikum wr, wb</p>
                 <p>Halo Teman-teman, saat ini kita sedang mengembangkan website internal untuk kita. Web ini dibuat untuk mempermudah kita dalam monitong dan Controlling.</p>
                 <p> Doa kan semoga website ini cepat selesai dan kita semua dapat menikmatinya.</p>  
-                <p> Akhir kata, Assalamulaikum wr, wb</p> 
+                <p> Akhir kata, Assalamulaikum wr, wb</p>
             </div>
         </div>
-        
-        
     </main>
 </body>
-</html>
+</html> 
