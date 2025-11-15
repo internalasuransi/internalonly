@@ -16,7 +16,7 @@ window.setLoadingState = (buttonElement, isLoading, loadingText, originalText) =
 
     if (isLoading) {
         buttonElement.setAttribute('data-original-text', originalText); // Simpan teks asli
-        buttonElement.disabled = true;
+        buttonElement.disabled = false;
         buttonElement.textContent = loadingText;
         buttonElement.classList.add('loading'); // Tambahkan class untuk styling/cursor
     } else {
