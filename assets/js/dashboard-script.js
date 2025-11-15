@@ -1,3 +1,14 @@
+const firebaseConfig = {
+    // Pastikan ini adalah konfigurasi yang lengkap dan benar
+    apiKey: "AIzaSyCzKWKanXp34LkluGAA6zJwwyr5unhTlAI",
+    authDomain: "internal-asuransi.firebaseapp.com",
+    projectId: "internal-asuransi",
+    storageBucket: "internal-asuransi.firebasestorage.app",
+    messagingSenderId: "548382017288",
+    appId: "1:548382017288:web:6cd13753a3388162b6cebd",
+    measurementId: "G-6FVCS2EXR5"
+};
+
 // Tambahkan function untuk handle touch events better
 function initDashboardMobile() {
     const sidebar = document.getElementById("dashboard-sidebar");
